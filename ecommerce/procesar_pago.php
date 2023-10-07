@@ -64,6 +64,27 @@ if (isset($_SESSION['id_cliente']) && !empty($_SESSION['id_cliente'])) {
                     }
                 }
 
+                $sqlInsertClienteMetodoPago = "INSERT INTO cliente_metodo_pago (id_cliente, id_tipo_pago, tarjeta, efectivo, correo_paypal) 
+                            VALUES ($idCliente, $tipoPago, '$numeroTarjeta', '$numeroCuenta', '$correoPaypal')";
+
+                if ($conn->query($sqlInsertClienteMetodoPago) !== TRUE) {
+                    echo "Error al insertar en cliente_metodo_pago: " . $conn->error;
+                    exit;
+                }
+
+                foreach ($_SESSION['carrito'] as $item) {
+                    $idProducto = $item['id_producto'];
+                    $cantidad = $item['cantidad'];
+                    $precio = $item['precio'];
+
+                    $sqlInsertDetalleOrden = "INSERT INTO detalle_orden (id_orden, id_producto, cantidad, precio) 
+                            VALUES ($idOrden, $idProducto, $cantidad, $precio)";
+
+                    if ($conn->query($sqlInsertDetalleOrden) !== TRUE) {
+                        echo "Error al insertar en detalle_orden: " . $conn->error;
+                        exit;
+                    }
+                }
 
                 $_SESSION['carrito'] = array();
 
