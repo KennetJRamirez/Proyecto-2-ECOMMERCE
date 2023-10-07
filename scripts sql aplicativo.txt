@@ -1,0 +1,111 @@
+/*INSTRUCCIONES SQL*/
+CREATE TABLE `carrito` (
+  `id_carrito` int(11) NOT NULL AUTO_INCREMENT,
+  `id_producto` int(11) DEFAULT NULL,
+  `id_cliente` int(11) DEFAULT NULL,
+  `cantidad` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_carrito`),
+  KEY `id_producto` (`id_producto`),
+  KEY `id_cliente` (`id_cliente`),
+  CONSTRAINT `carrito_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`),
+  CONSTRAINT `carrito_ibfk_2` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+
+CREATE TABLE `cliente` (
+  `id_cliente` int(11) NOT NULL AUTO_INCREMENT,
+  `nombres` varchar(100) DEFAULT NULL,
+  `apellidos` varchar(100) DEFAULT NULL,
+  `correo` varchar(100) DEFAULT NULL,
+  `telefono` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id_cliente`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+
+CREATE TABLE `cliente_metodo_pago` (
+  `id_cliente_metodo_pago` int(11) NOT NULL AUTO_INCREMENT,
+  `id_cliente` int(11) DEFAULT NULL,
+  `id_tipo_pago` int(11) DEFAULT NULL,
+  `tarjeta` varchar(20) DEFAULT NULL,
+  `efectivo` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id_cliente_metodo_pago`),
+  KEY `id_cliente` (`id_cliente`),
+  KEY `id_tipo_pago` (`id_tipo_pago`),
+  CONSTRAINT `cliente_metodo_pago_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`),
+  CONSTRAINT `cliente_metodo_pago_ibfk_2` FOREIGN KEY (`id_tipo_pago`) REFERENCES `tipo_pago` (`id_tipo_pago`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+
+CREATE TABLE `detalle_orden` (
+  `id_detalle_orden` int(11) NOT NULL AUTO_INCREMENT,
+  `id_orden` int(11) DEFAULT NULL,
+  `id_producto` int(11) DEFAULT NULL,
+  `cantidad` int(11) DEFAULT NULL,
+  `precio` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`id_detalle_orden`),
+  KEY `id_orden` (`id_orden`),
+  KEY `id_producto` (`id_producto`),
+  CONSTRAINT `detalle_orden_ibfk_1` FOREIGN KEY (`id_orden`) REFERENCES `orden` (`id_orden`),
+  CONSTRAINT `detalle_orden_ibfk_2` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+
+CREATE TABLE `domicilio` (
+  `id_domicilio` int(11) NOT NULL AUTO_INCREMENT,
+  `id_cliente` int(11) DEFAULT NULL,
+  `pais` varchar(100) DEFAULT NULL,
+  `estado` varchar(100) DEFAULT NULL,
+  `ciudad` varchar(100) DEFAULT NULL,
+  `calle` varchar(100) DEFAULT NULL,
+  `codigo_postal` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id_domicilio`),
+  KEY `id_cliente` (`id_cliente`),
+  CONSTRAINT `domicilio_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+
+CREATE TABLE `orden` (
+  `id_orden` int(11) NOT NULL AUTO_INCREMENT,
+  `id_cliente` int(11) DEFAULT NULL,
+  `id_tipo_pago` int(11) DEFAULT NULL,
+  `total` decimal(10,2) DEFAULT NULL,
+  `id_domicilio` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_orden`),
+  KEY `id_cliente` (`id_cliente`),
+  KEY `id_tipo_pago` (`id_tipo_pago`),
+  CONSTRAINT `orden_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`),
+  CONSTRAINT `orden_ibfk_2` FOREIGN KEY (`id_tipo_pago`) REFERENCES `tipo_pago` (`id_tipo_pago`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+
+
+CREATE TABLE `producto` (
+  `id_producto` int(11) NOT NULL AUTO_INCREMENT,
+  `id_tipo_producto` int(11) DEFAULT NULL,
+  `nombre` varchar(100) DEFAULT NULL,
+  `precio` decimal(10,2) DEFAULT NULL,
+  `descripcion` varchar(100) DEFAULT NULL,
+  `cantidad_disponible` int(11) DEFAULT NULL,
+  `estado_producto` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id_producto`),
+  KEY `id_tipo_producto` (`id_tipo_producto`),
+  CONSTRAINT `producto_ibfk_1` FOREIGN KEY (`id_tipo_producto`) REFERENCES `tipo_producto` (`id_tipo_producto`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+
+CREATE TABLE `tipo_pago` (
+  `id_tipo_pago` int(11) NOT NULL AUTO_INCREMENT,
+  `descripcion` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id_tipo_pago`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+
+
+CREATE TABLE `tipo_producto` (
+  `id_tipo_producto` int(11) NOT NULL AUTO_INCREMENT,
+  `tipo_producto_descripcion` varchar(100) DEFAULT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_tipo_producto`),
+  KEY `parent_id` (`parent_id`),
+  CONSTRAINT `tipo_producto_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `tipo_producto` (`id_tipo_producto`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
